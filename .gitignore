@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# OS / editor
+.DS_Store
+.claude/
+
+# Personal workout files live here; only examples are shared
+/workouts/*.yaml

@@ -1,0 +1,22 @@
+name: Full Body Strength
+sport: strength
+description: 3 rounds, rep-based with rest between exercises.
+
+steps:
+  - warmup: 5:00
+
+  - repeat: 3
+    steps:
+      - exercise: Goblet Squat
+        reps: 12
+        weight: 24kg
+      - rest: 1:00
+      - exercise: Push-up
+        reps: 15
+      - rest: 1:00
+      - exercise: Bent-over Row
+        reps: 12
+        weight: 40kg
+      - rest: 2:00
+
+  - cooldown: 5:00

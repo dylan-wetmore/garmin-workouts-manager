@@ -1,0 +1,19 @@
+name: Sweet Spot 3x12
+sport: cycling
+ftp: 250               # lets power targets use % of FTP
+description: Classic sweet-spot session.
+
+steps:
+  - warmup: 15:00
+    target: {power: 50-60%}
+
+  - repeat: 3
+    steps:
+      - work: 12:00
+        target: {power: 88-94%}
+        note: Smooth and steady, hold cadence 90+
+      - recover: 5:00
+        target: {power: 50%}
+
+  - cooldown: 10:00
+    target: {power: 45-55%}

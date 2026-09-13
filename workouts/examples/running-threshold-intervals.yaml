@@ -1,0 +1,16 @@
+name: Threshold Intervals
+sport: running
+units: metric          # pace targets are per km; use "imperial" for per mile
+description: 6x3min at threshold with 2min easy jogs.
+
+steps:
+  - warmup: 10:00
+    target: {hr: 120-140}
+
+  - repeat: 6
+    steps:
+      - run: 3:00
+        target: {pace: 4:00-4:10}   # min/km
+      - recover: 2:00
+
+  - cooldown: 10:00

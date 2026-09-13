@@ -1,0 +1,9 @@
+name: Easy Cardio 30
+sport: cardio          # rowing / elliptical / HIIT machine, etc.
+description: Steady aerobic session by heart rate.
+
+steps:
+  - warmup: 5:00
+  - work: 20:00
+    target: {hr: 130-145}
+  - cooldown: 5:00
