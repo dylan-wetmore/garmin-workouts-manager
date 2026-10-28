@@ -69,6 +69,30 @@ TARGET_TYPES = {
 }
 
 
+from .exercises import EXERCISES  # noqa: E402  (generated map: category -> names)
+
+
+def validate_exercise(category: str, name: str) -> tuple[str, str]:
+    """Validate a Garmin (category, exerciseName) pair; return them upper-cased.
+
+    Raises ValueError on an unknown category or name so bad mappings fail loudly
+    at parse time rather than silently uploading an unnamed ("Unknown") step.
+    """
+    cat = str(category).strip().upper()
+    nm = str(name).strip().upper()
+    if cat not in EXERCISES:
+        raise ValueError(
+            f"Unknown Garmin exercise category {category!r}. "
+            f"See gwm/exercises.py for valid categories."
+        )
+    if nm not in EXERCISES[cat]:
+        raise ValueError(
+            f"Unknown exercise {name!r} for category {cat}. "
+            f"Valid names for {cat} are listed in gwm/exercises.py."
+        )
+    return cat, nm
+
+
 def sport_type(key: str) -> dict:
     key = SPORT_ALIASES.get(key.lower(), key.lower())
     if key not in SPORT_TYPES:

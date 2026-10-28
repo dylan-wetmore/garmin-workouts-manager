@@ -101,13 +101,16 @@ again. Accounts with two-factor auth are prompted for a code on first login.
 ## Usage
 
 ```bash
-gwm build   workouts/my.yaml                 # preview the Garmin JSON (no upload)
-gwm push    workouts/my.yaml                  # upload to Garmin Connect
-gwm push    workouts/my.yaml --date 2026-08-10 # upload AND schedule on your calendar
-gwm list                                      # list your Garmin workouts (with IDs)
-gwm get     <workout_id>                      # print one workout as JSON
-gwm delete  <workout_id>                      # delete a workout
-gwm schedule <workout_id> 2026-08-10          # schedule an existing workout
+gwm build    workouts/my.yaml                 # preview the Garmin JSON (no upload)
+gwm validate workouts/my.yaml                 # check it builds & exercises are valid
+gwm push     workouts/my.yaml                 # upload to Garmin Connect
+gwm push     workouts/my.yaml --dry-run       # build & validate only, no upload
+gwm push     workouts/my.yaml --date 2026-08-10 # upload AND schedule on your calendar
+gwm update   <workout_id> workouts/my.yaml    # replace in place (keeps its schedules)
+gwm list                                       # list your Garmin workouts (with IDs)
+gwm get      <workout_id>                      # print one workout as JSON
+gwm delete   <workout_id>                      # delete a workout
+gwm schedule <workout_id> 2026-08-10           # schedule an existing workout
 ```
 
 (You can also run any command as `python -m gwm ...` without installing.)
@@ -216,6 +219,31 @@ steps:
 Exercise names show as the step label on your watch. Put rep ranges and
 "each side" in the name; set `reps:` to a single number. Weight stores in kg
 (`lb` is converted).
+
+#### Naming exercises for Garmin (avoids "Unknown")
+
+By default a strength step is a generic labelled step, so completed sessions log
+the exercise as **"Unknown"** in Garmin/Strava. Add an optional `garmin:` key to
+tag a step with Garmin's own exercise so it's recorded by name:
+
+```yaml
+- exercise: "Back Squat"        # cosmetic label
+  garmin: {category: SQUAT, name: BARBELL_BACK_SQUAT}
+  reps: 5
+  note: "Leg press if rack taken"   # cues still show alongside the name
+```
+
+Pairs are validated at build time against [`gwm/exercises.py`](gwm/exercises.py)
+(1,800+ exercises auto-generated from the Garmin FIT SDK) — an unknown
+category/name fails loudly instead of silently uploading an unnamed step. Run
+`gwm validate <file>` to check. Regenerate the list when the SDK updates:
+
+```bash
+pip install garmin-fit-sdk
+python scripts/generate_exercises.py
+```
+
+Omit `garmin:` and the step behaves exactly as before.
 
 See [`workouts/examples/`](workouts/examples) for full running, cycling,
 strength, and cardio files.

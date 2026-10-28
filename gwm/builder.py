@@ -6,6 +6,8 @@ dict that Garmin's ``workout-service`` expects.
 
 from __future__ import annotations
 
+import re
+
 from . import constants as C
 from . import units
 
@@ -178,11 +180,23 @@ def _build_executable(step, counter: _Counter, ctx: dict, child_id: int | None):
 
     # --- strength extras ---
     if is_exercise:
-        # 'exercise: Squat' -> the name becomes the step label/description.
-        if isinstance(value, str) and not step.get("note"):
-            dto["description"] = value
-        dto["category"] = None
-        dto["exerciseName"] = None
+        if "garmin" in step:
+            # Explicit Garmin exercise identifier: {category: ..., name: ...}.
+            g = step["garmin"] or {}
+            if "category" not in g or "name" not in g:
+                raise ValueError(
+                    f"garmin: needs both 'category' and 'name' (step: {value!r})"
+                )
+            cat, nm = C.validate_exercise(g["category"], g["name"])
+            dto["category"] = cat
+            dto["exerciseName"] = nm
+            # exerciseName is the on-watch label; description stays as any note.
+        else:
+            # 'exercise: Squat' -> the name becomes the step label/description.
+            if isinstance(value, str) and not step.get("note"):
+                dto["description"] = value
+            dto["category"] = None
+            dto["exerciseName"] = None
         if "weight" in step:
             dto["weightValue"] = round(units.parse_weight(step["weight"]), 2)
             dto["weightUnit"] = {"unitKey": "kilogram"}
@@ -229,6 +243,19 @@ def _build_target(step: dict, ctx: dict) -> dict:
         raise ValueError(f"A step may have only one target, got: {list(target)}")
 
     (key, raw), = target.items()
+
+    # Zone-based targets: e.g. {hr: z2} or {power: z3}. Uses the device's own
+    # configured zones — no absolute bpm/watts needed.
+    zmatch = re.fullmatch(r"z(?:one)?\s*([1-5])", str(raw).strip().lower()) if key in ("hr", "power") else None
+    if zmatch:
+        return {
+            "targetType": C.target_type(key),
+            "targetValueOne": None,
+            "targetValueTwo": None,
+            "targetValueUnit": None,
+            "zoneNumber": int(zmatch.group(1)),
+        }
+
     if key == "power":
         lo, hi = units.parse_power_target(raw, ctx.get("ftp"))
     elif key == "hr":

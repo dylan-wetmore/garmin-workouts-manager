@@ -13,3 +13,5 @@ build/
 
 # Personal workout files live here; only examples are shared
 /workouts/*.yaml
+/workouts/*/
+!/workouts/examples/

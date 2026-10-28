@@ -69,6 +69,10 @@ class GarminClient:
     def create_workout(self, payload: dict) -> dict:
         return self._require().upload_workout(payload) or {}
 
+    def update_workout(self, workout_id, payload: dict) -> dict:
+        """Replace an existing workout in place (keeps its id and schedules)."""
+        return self._require().update_workout(workout_id, payload) or {}
+
     def list_workouts(self, limit: int = 50, start: int = 0) -> list[dict]:
         return self._require().get_workouts(start=start, limit=limit) or []
 

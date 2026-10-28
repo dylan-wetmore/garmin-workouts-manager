@@ -1,0 +1,39 @@
+name: "Gym A: Legs & Push"
+sport: strength
+description: "Example with Garmin exercise identifiers so sessions log named exercises (not 'Unknown')."
+
+steps:
+  - repeat: 3
+    steps:
+      - exercise: "Back Squat"
+        garmin: {category: SQUAT, name: BARBELL_BACK_SQUAT}
+        reps: 5
+      - rest: 2:00
+
+  - repeat: 3
+    steps:
+      - exercise: "Barbell Bench Press"
+        garmin: {category: BENCH_PRESS, name: BARBELL_BENCH_PRESS}
+        reps: 5
+      - rest: 2:00
+
+  - repeat: 3
+    steps:
+      - exercise: "Lat Pulldown"
+        garmin: {category: PULL_UP, name: LAT_PULLDOWN}
+        reps: 8
+      - rest: 1:30
+
+  - repeat: 3
+    steps:
+      - exercise: "Leg Curl"
+        garmin: {category: LEG_CURL, name: LEG_CURL}
+        reps: 12
+      - rest: 1:00
+
+  - repeat: 3
+    steps:
+      - exercise: "Plank"
+        garmin: {category: PLANK, name: PLANK}
+        time: 0:45
+      - rest: 0:30

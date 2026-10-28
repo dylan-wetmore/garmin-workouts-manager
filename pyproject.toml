@@ -12,6 +12,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+# For scripts/generate_exercises.py (regenerates gwm/exercises.py from the FIT SDK)
+gen = ["garmin-fit-sdk>=21.0"]
 
 [project.scripts]
 gwm = "gwm.cli:main"

@@ -38,9 +38,45 @@ def cmd_build(args) -> int:
     return 0
 
 
+def _count_steps(steps):
+    n = 0
+    for s in steps:
+        n += 1
+        if s.get("type") == "RepeatGroupDTO":
+            n += _count_steps(s["workoutSteps"])
+    return n
+
+
+def cmd_validate(args) -> int:
+    spec = load_spec(args.file)
+    payload = build_workout(spec)  # raises on any invalid exercise/target
+    steps = payload["workoutSegments"][0]["workoutSteps"]
+    named = sum(
+        1 for s in _flatten(steps) if s.get("exerciseName")
+    )
+    print(
+        f"✔ Valid: '{payload['workoutName']}' "
+        f"[{payload['sportType']['sportTypeKey']}] — "
+        f"{_count_steps(steps)} steps, {named} named exercise(s)"
+    )
+    return 0
+
+
+def _flatten(steps):
+    for s in steps:
+        if s.get("type") == "RepeatGroupDTO":
+            yield from _flatten(s["workoutSteps"])
+        else:
+            yield s
+
+
 def cmd_push(args) -> int:
     spec = load_spec(args.file)
     payload = build_workout(spec)
+    if getattr(args, "dry_run", False):
+        named = sum(1 for s in _flatten(payload["workoutSegments"][0]["workoutSteps"]) if s.get("exerciseName"))
+        print(f"✔ Dry run OK: '{payload['workoutName']}' — {named} named exercise(s). Not uploaded.")
+        return 0
     client = _client()
     result = client.create_workout(payload)
     wid = result.get("workoutId")
@@ -48,6 +84,15 @@ def cmd_push(args) -> int:
     if args.date:
         client.schedule_workout(wid, args.date)
         print(f"✔ Scheduled for {args.date}")
+    return 0
+
+
+def cmd_update(args) -> int:
+    spec = load_spec(args.file)
+    payload = build_workout(spec)
+    client = _client()
+    client.update_workout(args.id, payload)
+    print(f"✔ Updated workout {args.id} from '{payload['workoutName']}' (schedules kept)")
     return 0
 
 
@@ -86,7 +131,17 @@ def build_parser() -> argparse.ArgumentParser:
     pu = sub.add_parser("push", help="Upload a workout YAML to Garmin Connect")
     pu.add_argument("file")
     pu.add_argument("--date", help="Also schedule it (YYYY-MM-DD)")
+    pu.add_argument("--dry-run", action="store_true", help="Build and validate only; do not upload")
     pu.set_defaults(func=cmd_push)
+
+    va = sub.add_parser("validate", help="Build and validate a workout YAML without uploading")
+    va.add_argument("file")
+    va.set_defaults(func=cmd_validate)
+
+    up = sub.add_parser("update", help="Replace an existing workout in place (keeps its schedules)")
+    up.add_argument("id")
+    up.add_argument("file")
+    up.set_defaults(func=cmd_update)
 
     ls = sub.add_parser("list", help="List your Garmin workouts")
     ls.add_argument("--limit", type=int, default=50)

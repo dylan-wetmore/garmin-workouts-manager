@@ -44,10 +44,15 @@ STEPS — each list item is one of:
    Repeats may be nested.
 
 3) A strength exercise (use with sport: strength):
-     - exercise: "Name — optional short cue"
+     - exercise: "Name"
+       garmin: {category: SQUAT, name: BARBELL_BACK_SQUAT}  # optional; logs by name
        reps: <N>            # OR  time: "0:45"   OR  distance: "..."
        weight: "60kg"       # optional; "lb" also accepted
-   Put rep ranges and "each side" in the name text; set reps to a single number.
+       note: "short cue"    # optional
+   Put "each side" and cues in `note`; set reps to a single number. The optional
+   `garmin:` {category, name} tags the exercise with Garmin's own identifier so
+   completed sessions log by name instead of "Unknown" (both must be valid Garmin
+   enum values, e.g. category DEADLIFT / name ROMANIAN_DEADLIFT).
 
 TARGETS (choose exactly one per step, under `target:`)
    pace:    "4:00-4:10"      min per km (or per mile if units: imperial)

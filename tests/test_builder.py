@@ -97,6 +97,58 @@ def test_distance_end_condition():
     assert step["endConditionValue"] == 400
 
 
+def test_garmin_exercise_identifier_sets_fields():
+    spec = {
+        "name": "G", "sport": "strength",
+        "steps": [
+            {"exercise": "Back Squat",
+             "garmin": {"category": "SQUAT", "name": "BARBELL_BACK_SQUAT"},
+             "reps": 5, "weight": "40kg"},
+        ],
+    }
+    step = build_workout(spec)["workoutSegments"][0]["workoutSteps"][0]
+    assert step["category"] == "SQUAT"
+    assert step["exerciseName"] == "BARBELL_BACK_SQUAT"
+    assert step["endCondition"]["conditionTypeKey"] == "reps"
+    assert step["weightValue"] == 40
+
+
+def test_garmin_identifier_case_insensitive():
+    spec = {"name": "G", "sport": "strength",
+            "steps": [{"exercise": "Plank",
+                       "garmin": {"category": "plank", "name": "plank"},
+                       "time": "0:45"}]}
+    step = build_workout(spec)["workoutSegments"][0]["workoutSteps"][0]
+    assert step["category"] == "PLANK" and step["exerciseName"] == "PLANK"
+
+
+def test_unknown_exercise_pair_raises():
+    import pytest
+    spec = {"name": "G", "sport": "strength",
+            "steps": [{"exercise": "Nope",
+                       "garmin": {"category": "SQUAT", "name": "NOT_A_REAL_LIFT"},
+                       "reps": 5}]}
+    with pytest.raises(ValueError):
+        build_workout(spec)
+
+    spec2 = {"name": "G", "sport": "strength",
+             "steps": [{"exercise": "Nope",
+                        "garmin": {"category": "FAKE", "name": "PLANK"},
+                        "reps": 5}]}
+    with pytest.raises(ValueError):
+        build_workout(spec2)
+
+
+def test_strength_without_garmin_is_unchanged():
+    """No `garmin:` key -> category/exerciseName stay null (no regression)."""
+    spec = {"name": "S", "sport": "strength",
+            "steps": [{"exercise": "Goblet Squat", "reps": 10}]}
+    step = build_workout(spec)["workoutSegments"][0]["workoutSteps"][0]
+    assert step["category"] is None
+    assert step["exerciseName"] is None
+    assert step["description"] == "Goblet Squat"
+
+
 def test_lap_button_end_condition():
     spec = {"name": "L", "sport": "run", "steps": [{"run": "lap"}]}
     step = build_workout(spec)["workoutSegments"][0]["workoutSteps"][0]
