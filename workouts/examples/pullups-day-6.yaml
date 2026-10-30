@@ -1,0 +1,24 @@
+name: "Pull-Ups 6-8 · Day 6"
+sport: strength
+description: "50pullups.com 6-8 cycle · Day 6. Five sets, min 120s rest between every set (max-test 7). Source: https://www.50pullups.com/50-pullups-programme/6-8-pullups"
+
+steps:
+  - exercise: "Pull-Up"
+    garmin: {category: PULL_UP, name: PULL_UP}
+    reps: 4
+  - rest: 2:00
+  - exercise: "Pull-Up"
+    garmin: {category: PULL_UP, name: PULL_UP}
+    reps: 5
+  - rest: 2:00
+  - exercise: "Pull-Up"
+    garmin: {category: PULL_UP, name: PULL_UP}
+    reps: 4
+  - rest: 2:00
+  - exercise: "Pull-Up"
+    garmin: {category: PULL_UP, name: PULL_UP}
+    reps: 4
+  - rest: 2:00
+  - exercise: "Pull-Up - MAX (min 6)"
+    garmin: {category: PULL_UP, name: PULL_UP}
+    reps: 6

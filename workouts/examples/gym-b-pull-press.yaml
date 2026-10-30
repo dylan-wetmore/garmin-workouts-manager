@@ -1,0 +1,40 @@
+name: "Gym B: Pull & Press"
+sport: strength
+description: "Standard Friday upper session. Straight sets."
+
+steps:
+  - repeat: 3
+    steps:
+      - exercise: "Romanian Deadlift"
+        garmin: {category: DEADLIFT, name: ROMANIAN_DEADLIFT}
+        reps: 8
+        note: "3s lowering"
+      - rest: 1:30
+  - repeat: 3
+    steps:
+      - exercise: "Overhead Barbell Press"
+        garmin: {category: SHOULDER_PRESS, name: OVERHEAD_BARBELL_PRESS}
+        reps: 5
+      - rest: 2:00
+  - repeat: 3
+    steps:
+      - exercise: "Seated Cable Row"
+        garmin: {category: ROW, name: SEATED_CABLE_ROW}
+        reps: 10
+      - rest: 1:00
+  - repeat: 2
+    steps:
+      - exercise: "Bulgarian Split Squat"
+        garmin: {category: LUNGE, name: DUMBBELL_BULGARIAN_SPLIT_SQUAT}
+        reps: 8
+        note: "Each leg"
+      - rest: 1:00
+  - repeat: 3
+    steps:
+      - exercise: "Side Plank (left)"
+        garmin: {category: PLANK, name: SIDE_PLANK}
+        time: 0:30
+      - exercise: "Side Plank (right)"
+        garmin: {category: PLANK, name: SIDE_PLANK}
+        time: 0:30
+      - rest: 0:30

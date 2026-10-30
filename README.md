@@ -248,6 +248,20 @@ Omit `garmin:` and the step behaves exactly as before.
 See [`workouts/examples/`](workouts/examples) for full running, cycling,
 strength, and cardio files.
 
+### Pull-up programme (50pullups.com 6-8 cycle)
+
+`workouts/examples/pullups-day-1.yaml` … `pullups-day-6.yaml` implement the
+[50pullups.com 6-8 cycle](https://www.50pullups.com/50-pullups-programme/6-8-pullups)
+(five sets, min 120 s rest between every set). Garmin can't express "max reps",
+so the final set is modelled as `reps:` = the stated minimum with "MAX (min N)"
+in the label.
+
+> **The cycle MUST start on a Friday.** The programme requires a two-day rest
+> after Days 3 and 6. Scheduling Fri → Wed → Fri … gives a four-day gap across
+> each weekend, which satisfies that rest. Starting on a Wednesday puts Days 3
+> and 6 on a Friday with only a one-day gap to the next session, violating the
+> required rest.
+
 ---
 
 ## Troubleshooting
